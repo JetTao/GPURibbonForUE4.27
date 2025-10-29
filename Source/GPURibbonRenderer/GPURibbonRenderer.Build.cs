@@ -31,7 +31,7 @@ public class GPURibbonRenderer : ModuleRules
 			new string[]
 			{
 				"Core",	
-					"Niagara"
+				"Niagara",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -44,15 +44,16 @@ public class GPURibbonRenderer : ModuleRules
 				"Engine",
 				"RHI",
 				"RenderCore",
-				"NiagaraShader",
-				"NiagaraVertexFactories",
 				"NiagaraCore",
-				"Niagara"
+				"Niagara",
+				"NiagaraShader",
+				"GPURibbonShaders",
+				"GPURibbonVertexFactories"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
-		
-		
+
+
 		DynamicallyLoadedModuleNames.AddRange(
 			new string[]
 			{
@@ -71,5 +72,7 @@ public class GPURibbonRenderer : ModuleRules
 					"UnrealEd"
 				});
 		}
+		
+		OptimizeCode = CodeOptimization.Never;
 	}
 }
