@@ -7,7 +7,6 @@
 #include "NiagaraRendererProperties.h"
 #include "NiagaraCommon.h"
 #include "NiagaraDataSetAccessor.h"
-#include "NiagaraExporter.h"
 #include "NiagaraGPURibbonRendererProperties.generated.h"
 
 class FNiagaraEmitterInstance;
