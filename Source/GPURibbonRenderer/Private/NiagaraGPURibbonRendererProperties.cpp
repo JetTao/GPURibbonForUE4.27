@@ -52,7 +52,6 @@ UNiagaraGPURibbonRendererProperties::UNiagaraGPURibbonRendererProperties()
 	, UV1AgeOffsetMode_DEPRECATED(ENiagaraGPURibbonAgeOffsetMode::Scale)
 #endif
 	, MaxNumRibbons(0)
-	, bUseGPUInit(false)
 	, Shape(ENiagaraGPURibbonShapeMode::Plane)
 	, bEnableAccurateGeometry(false)
 	, WidthSegmentationCount(1)

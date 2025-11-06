@@ -272,14 +272,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Ribbon Rendering")	
 	int32 MaxNumRibbons;
 	
-	/**
-	*	Whether we use the CPU or GPU to generate ribbon geometry for CPU systems.
-	*	GPU systems will always use a fully GPU initialization pipeline,
-	*	Will fall back to CPU init when GPU init isn't available.
-	*/ 
-	UPROPERTY(EditAnywhere, Category = "Ribbon Rendering")	
-	bool bUseGPUInit;
-
 
 	/** If true, the particles are only sorted when using a translucent material. */
 	UPROPERTY(EditAnywhere, Category = "Ribbon Rendering")
