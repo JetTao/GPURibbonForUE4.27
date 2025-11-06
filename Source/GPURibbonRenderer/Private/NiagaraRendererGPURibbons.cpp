@@ -16,19 +16,12 @@
 #include "NiagaraRibbonCompute.h"
 #include "Misc/LazySingleton.h"
 
-DECLARE_CYCLE_STAT(TEXT("Generate Ribbon Vertex Data [GT]"), STAT_NiagaraGenRibbonVertexData, STATGROUP_Niagara);
-DECLARE_CYCLE_STAT(TEXT("Render Ribbons [RT]"), STAT_NiagaraRenderRibbons, STATGROUP_Niagara);
+DECLARE_CYCLE_STAT(TEXT("Render GPU Ribbons [RT]"), STAT_NiagaraRenderGPURibbons, STATGROUP_Niagara);
 
-DECLARE_CYCLE_STAT(TEXT("GenerateIndex [RT]"), STAT_NiagaraRibbonsGenerateIndex, STATGROUP_Niagara);
-DECLARE_CYCLE_STAT(TEXT("GenerateUniformBuffer [RT]"), STAT_NiagaraRibbonsGenerateUniformBuffer, STATGROUP_Niagara);
-DECLARE_CYCLE_STAT(TEXT("GenerateVFLooseParameter [RT]"), STAT_NiagaraRibbonsGenerateVFLooseParameter, STATGROUP_Niagara);
-
-
-DECLARE_CYCLE_STAT(TEXT("Generate Indices CPU [GT]"), STAT_NiagaraRenderRibbonsGenIndiciesCPU, STATGROUP_Niagara);
-DECLARE_CYCLE_STAT(TEXT("Generate Indices GPU [RT]"), STAT_NiagaraRenderRibbonsGenIndiciesGPU, STATGROUP_Niagara);
-
-DECLARE_CYCLE_STAT(TEXT("Generate Vertices CPU [GT]"), STAT_NiagaraRenderRibbonsGenVerticesCPU, STATGROUP_Niagara);
-DECLARE_CYCLE_STAT(TEXT("Generate Vertices GPU [RT]"), STAT_NiagaraRenderRibbonsGenVerticesGPU, STATGROUP_Niagara);
+DECLARE_CYCLE_STAT(TEXT("GPU Ribbons GenerateUniformBuffer [RT]"), STAT_NiagaraGPURibbonsGenerateUniformBuffer, STATGROUP_Niagara);
+DECLARE_CYCLE_STAT(TEXT("GPU Ribbons GenerateVFLooseParameter [RT]"), STAT_NiagaraGPURibbonsGenerateVFLooseParameter, STATGROUP_Niagara);
+DECLARE_CYCLE_STAT(TEXT("Generate Indices GPU [RT]"), STAT_NiagaraRenderGPURibbonsGenIndicies, STATGROUP_Niagara);
+DECLARE_CYCLE_STAT(TEXT("Generate Vertices GPU [RT]"), STAT_NiagaraRenderGPURibbonsGenVertices, STATGROUP_Niagara);
 
 
 DECLARE_STATS_GROUP(TEXT("NiagaraRibbons"), STATGROUP_NiagaraRibbons, STATCAT_Advanced);
@@ -657,7 +650,7 @@ void FNiagaraRendererGPURibbons::ReleaseRenderThreadResources()
 
 void FNiagaraRendererGPURibbons::GetDynamicMeshElements(const TArray<const FSceneView*>& Views, const FSceneViewFamily& ViewFamily, uint32 VisibilityMap, FMeshElementCollector& Collector, const FNiagaraSceneProxy *SceneProxy) const
 {
-	SCOPE_CYCLE_COUNTER(STAT_NiagaraRenderRibbons);
+	SCOPE_CYCLE_COUNTER(STAT_NiagaraRenderGPURibbons);
 	PARTICLE_PERF_STAT_CYCLES_RT(SceneProxy->PerfStatsContext, GetDynamicMeshElements);
 
 	FNiagaraDynamicDataGPURibbon* DynamicData = static_cast<FNiagaraDynamicDataGPURibbon*>(DynamicDataRender);
@@ -730,7 +723,6 @@ void FNiagaraRendererGPURibbons::GetDynamicMeshElements(const TArray<const FScen
 
 FNiagaraDynamicDataBase* FNiagaraRendererGPURibbons::GenerateDynamicData(const FNiagaraSceneProxy* Proxy, const UNiagaraRendererProperties* InProperties, const FNiagaraEmitterInstance* Emitter)const
 {
-	SCOPE_CYCLE_COUNTER(STAT_NiagaraGenRibbonVertexData);
 	check(Emitter && Emitter->GetParentSystemInstance());
 
 	FNiagaraDynamicDataGPURibbon* DynamicData = nullptr;
@@ -806,7 +798,7 @@ void FNiagaraRendererGPURibbons::GetDynamicRayTracingInstances(FRayTracingMateri
 		return;
 	}
 	
-	SCOPE_CYCLE_COUNTER(STAT_NiagaraRenderRibbons);
+	SCOPE_CYCLE_COUNTER(STAT_NiagaraRenderGPURibbons);
 	check(SceneProxy);
 	
 	FNiagaraDynamicDataGPURibbon *DynamicDataRibbon = static_cast<FNiagaraDynamicDataGPURibbon*>(DynamicDataRender);
@@ -1133,7 +1125,6 @@ void FNiagaraRendererGPURibbons::GenerateIndexBufferForView(FNiagaraIndexGenerat
                                                          const TSharedPtr<FNiagaraRibbonRenderingFrameViewResources>& RenderingViewResources, const FSceneView* View,
                                                          const FVector& ViewOriginForDistanceCulling) const
 {
-	SCOPE_CYCLE_COUNTER(STAT_NiagaraRibbonsGenerateIndex);
 
 	if (GeneratedData.MaxSegmentCount > 0)
 	{
@@ -1155,7 +1146,7 @@ void FNiagaraRendererGPURibbons::GenerateIndexBufferForView(FNiagaraIndexGenerat
 void FNiagaraRendererGPURibbons::SetupPerViewUniformBuffer(FNiagaraIndexGenerationInput& GeneratedData, const FSceneView* View,
 	const FSceneViewFamily& ViewFamily, const FNiagaraSceneProxy* SceneProxy, FNiagaraGPURibbonUniformBufferRef& OutUniformBuffer) const
 {
-	SCOPE_CYCLE_COUNTER(STAT_NiagaraRibbonsGenerateUniformBuffer);
+	SCOPE_CYCLE_COUNTER(STAT_NiagaraGPURibbonsGenerateUniformBuffer);
 
 	FNiagaraGPURibbonUniformParameters PerViewUniformParameters;
 	FMemory::Memzero(&PerViewUniformParameters,sizeof(PerViewUniformParameters)); // Clear unset bytes
@@ -1215,7 +1206,7 @@ inline void FNiagaraRendererGPURibbons::SetupMeshBatchAndCollectorResourceForVie
     const FSceneViewFamily& ViewFamily, const FNiagaraSceneProxy* SceneProxy, const TSharedPtr<FNiagaraRibbonRenderingFrameResources>& RenderingResources, const TSharedPtr<FNiagaraRibbonRenderingFrameViewResources>& RenderingViewResources,
     FMeshBatch& OutMeshBatch) const
 {
-	SCOPE_CYCLE_COUNTER(STAT_NiagaraRibbonsGenerateVFLooseParameter);
+	SCOPE_CYCLE_COUNTER(STAT_NiagaraGPURibbonsGenerateVFLooseParameter);
 
 	const bool bIsWireframe = ViewFamily.EngineShowFlags.Wireframe;
 	FMaterialRenderProxy* MaterialRenderProxy = DynamicDataRibbon->Material;
@@ -1280,7 +1271,7 @@ inline void FNiagaraRendererGPURibbons::SetupMeshBatchAndCollectorResourceForVie
 void FNiagaraRendererGPURibbons::InitializeViewIndexBuffersGPU(FRHICommandListImmediate& CMDList, NiagaraEmitterInstanceBatcher* Batcher,
 	const FNiagaraDataBuffer* SourceParticleData, const TSharedPtr<FNiagaraRibbonRenderingFrameViewResources>& RenderingViewResources) const
 {
-	SCOPE_CYCLE_COUNTER(STAT_NiagaraRenderRibbonsGenIndiciesGPU);
+	SCOPE_CYCLE_COUNTER(STAT_NiagaraRenderGPURibbonsGenIndicies);
 	
 	const uint32 NumInstances = SourceParticleData->GetNumInstances();
 		
@@ -1485,7 +1476,7 @@ FRibbonComputeUniformParameters FNiagaraRendererGPURibbons::SetupComputeVertexGe
 void FNiagaraRendererGPURibbons::InitializeVertexBuffersGPU(FRHICommandListImmediate& CMDList, NiagaraEmitterInstanceBatcher* Batcher, const FNiagaraDataBuffer* SourceParticleData,
 	FNiagaraRibbonGPUInitComputeBuffers& TempBuffers, const TSharedPtr<FNiagaraRibbonRenderingFrameResources>& RenderingResources) const
 {	
-	SCOPE_CYCLE_COUNTER(STAT_NiagaraRenderRibbonsGenVerticesGPU);
+	SCOPE_CYCLE_COUNTER(STAT_NiagaraRenderGPURibbonsGenVertices);
 
 	FRibbonComputeUniformParameters CommonParams = SetupComputeVertexGenParams(Batcher, RenderingResources, SourceParticleData);
 
