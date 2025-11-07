@@ -68,7 +68,6 @@ class FRibbonWantsAutomaticTessellation : SHADER_PERMUTATION_BOOL("RIBBONS_WANTS
 class FRibbonHasTwist : SHADER_PERMUTATION_BOOL("RIBBON_HAS_TWIST");
 
 class FRibbonHasHighSliceComplexity : SHADER_PERMUTATION_BOOL("RIBBON_HAS_HIGH_SLICE_COMPLEXITY");
-using FRibbonComputePermutationDomain = TShaderPermutationDomain<FRibbonHasFullRibbonID, FRibbonHasRibbonID, FRibbonHasCustomLinkOrder, FRibbonWantsConstantTessellation, FRibbonWantsAutomaticTessellation, FRibbonHasTwist, FRibbonHasHighSliceComplexity>;
 
 
 struct FNiagaraRibbonComputeCommon
@@ -246,7 +245,7 @@ class GPURIBBONSHADERS_API FNiagaraRibbonUVParamCalculationCS : public FGlobalSh
 	DECLARE_GLOBAL_SHADER(FNiagaraRibbonUVParamCalculationCS);
 	SHADER_USE_PARAMETER_STRUCT(FNiagaraRibbonUVParamCalculationCS, FGlobalShader);
 	
-	using FPermutationDomain = TShaderPermutationDomain<FRibbonHasFullRibbonID, FRibbonHasRibbonID, FRibbonWantsConstantTessellation, FRibbonWantsAutomaticTessellation, FRibbonHasTwist>;
+	using FPermutationDomain = TShaderPermutationDomain<FRibbonHasFullRibbonID, FRibbonHasRibbonID, FRibbonWantsConstantTessellation, FRibbonWantsAutomaticTessellation>;
 	using FParameters = FNiagaraRibbonVertexFinalizationParameters;
 	
 	static bool ShouldCompilePermutation(const FGlobalShaderPermutationParameters& Parameters)

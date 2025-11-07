@@ -383,7 +383,7 @@ void FNiagaraRibbonVertexBuffers::InitializeOrUpdateBuffers(const FNiagaraRibbon
 	constexpr ERHIAccess InitialBufferAccessFlags = ERHIAccess::SRVMask | ERHIAccess::VertexOrIndexBuffer;
 	
 	{		
-		const uint32 TotalParticles = SourceParticleData->GetNumInstancesAllocated();
+		const uint32 TotalParticles = SourceParticleData->GetNumInstances();
 
 		// We assume to have at least 2 particles in each ribbon, therefor we can't have more than instances/2 ribbons
 		const int32 TotalRibbons = FMath::Clamp<int32>(TotalParticles / 2, 1, MaxAllocatedRibbons);
@@ -668,7 +668,7 @@ void FNiagaraRendererGPURibbons::GetDynamicMeshElements(const TArray<const FScen
 
 	// Bail if we don't have enough particle data to have a valid ribbon
 	// or if somehow the sim targets don't match
-	if (SimTarget != ENiagaraSimTarget::GPUComputeSim || SourceParticleData->GetNumInstancesAllocated() < 2)
+	if (SimTarget != ENiagaraSimTarget::GPUComputeSim || SourceParticleData->GetNumInstances() < 2)
 	{
 		return;
 	}
@@ -818,7 +818,7 @@ void FNiagaraRendererGPURibbons::GetDynamicRayTracingInstances(FRayTracingMateri
 
 	// Bail if we don't have enough particle data to have a valid ribbon
 	// or if somehow the sim targets don't match
-	if (SimTarget != ENiagaraSimTarget::GPUComputeSim || SourceParticleData->GetNumInstancesAllocated() < 2)
+	if (SimTarget != ENiagaraSimTarget::GPUComputeSim || SourceParticleData->GetNumInstances() < 2)
 	{
 		return;
 	}
@@ -1094,7 +1094,7 @@ FNiagaraIndexGenerationInput FNiagaraRendererGPURibbons::CalculateIndexBufferCon
 	
 	// If we are a gpu sim, we rely on num instances allocated since between now and render we could have a different number of particles living
 	// If we're not a gpu sim, we're a cpu sim with gpu init, we can rely on the num particles - 1 being the max cap for segments
-	IndexGenInput.MaxSegmentCount = SourceParticleData->GetNumInstancesAllocated();
+	IndexGenInput.MaxSegmentCount = SourceParticleData->GetNumInstances();
 	
 
 	IndexGenInput.SubSegmentCount = 1;
@@ -1480,7 +1480,7 @@ void FNiagaraRendererGPURibbons::InitializeVertexBuffersGPU(FRHICommandListImmed
 
 	FRibbonComputeUniformParameters CommonParams = SetupComputeVertexGenParams(Batcher, RenderingResources, SourceParticleData);
 
-	const int32 NumExecutableInstances = CommonParams.EmitterParticleCountsBufferOffset != INDEX_NONE? SourceParticleData->GetNumInstancesAllocated() : SourceParticleData->GetNumInstances();
+	const int32 NumExecutableInstances = SourceParticleData->GetNumInstances();
 
 	const bool bCanRun = NumExecutableInstances >= 2;
 	
@@ -1814,7 +1814,6 @@ void FNiagaraRendererGPURibbons::InitializeVertexBuffersGPU(FRHICommandListImmed
 			PermutationVector.Set<FRibbonHasRibbonID>(GenerationConfig.HasSimpleRibbonIDs());
 			PermutationVector.Set<FRibbonWantsAutomaticTessellation>(GenerationConfig.WantsAutomaticTessellation());
 			PermutationVector.Set<FRibbonWantsConstantTessellation>(GenerationConfig.WantsConstantTessellation());
-			PermutationVector.Set<FRibbonHasTwist>(GenerationConfig.HasTwist());
 
 			TShaderMapRef<FNiagaraRibbonUVParamCalculationCS> ComputeShader(GetGlobalShaderMap(GMaxRHIFeatureLevel), PermutationVector);
 
@@ -1873,7 +1872,7 @@ void FNiagaraRibbonComputeDispatchManager::GenerateAllGPUData(FRHICommandListImm
 		{
 			const bool bIsGPUSim = Params.SourceParticleData->GetGPUInstanceCountBufferOffset() != INDEX_NONE;
 
-			ComputeBuffers.InitOrUpdateBuffers(bIsGPUSim? Params.SourceParticleData->GetNumInstancesAllocated() : Params.SourceParticleData->GetNumInstances(),
+			ComputeBuffers.InitOrUpdateBuffers(bIsGPUSim? Params.SourceParticleData->GetNumInstances() : Params.SourceParticleData->GetNumInstances(),
 				Params.Renderer->GenerationConfig.HasRibbonIDs(),
 				Params.Renderer->GenerationConfig.WantsAutomaticTessellation(),
 				Params.Renderer->GenerationConfig.HasTwist());

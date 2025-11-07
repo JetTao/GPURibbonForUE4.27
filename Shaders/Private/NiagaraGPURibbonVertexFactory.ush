@@ -93,6 +93,17 @@ float3 CubicInterp(float3 P0, float3 T0, float3 P1, float3 T1, float A, float TS
 	return (((2*A3)-(3*A2)+1) * P0) + (TS * (A3-(2*A2)+A) * T0) + (TS * (A3-A2) * T1) + (((-2*A3)+(3*A2)) * P1);
 }
 
+float3 SafeNormalize(float3 V, float3 Default)
+{
+	const float len2 = dot(V, V);
+	if ( len2 > 0.0f )
+	{
+		return V * rsqrt(len2);
+	}
+	return Default;
+}
+
+
 /*********************************************************************************
  *							Particle specific
  *********************************************************************************/
@@ -222,7 +233,7 @@ void GetNiagaraParticlePositionAndDirection(in FInterpVtxData InterpVtxData, in 
 		);
 		
 		Intermediates.Position = TransformPosition(CubicInterp(Pos0, TangentAndDist0.xyz, Pos1, TangentAndDist1.xyz, InterpVtxData.Alpha, TangentAndDist1.w - TangentAndDist0.w));
-		Intermediates.Direction = normalize(TransformVector(lerp(TangentAndDist0.xyz, TangentAndDist1.xyz, InterpVtxData.Alpha)));
+		Intermediates.Direction = SafeNormalize(TransformVector(lerp(TangentAndDist0.xyz, TangentAndDist1.xyz, InterpVtxData.Alpha)), float3(0, 0, 0));
 
 		Intermediates.DistanceOnSegment = lerp(TangentAndDist0.w, TangentAndDist1.w, InterpVtxData.Alpha);
 	}
@@ -679,12 +690,6 @@ FMaterialVertexParameters GetMaterialVertexParameters(FVertexFactoryInput Input,
 	return Result;
 }
 
-#if 0
-float3 SafeNormalize(float3 V)
-{
-	return rsqrt(max(0.001, dot(V,V))) * V;
-}
-#endif
 
 void GetNiagaraParticleTangents(FVertexFactoryInput Input, in FInterpVtxData InterpVtxData, in out FVertexFactoryIntermediates Intermediates)
 {
@@ -695,11 +700,11 @@ void GetNiagaraParticleTangents(FVertexFactoryInput Input, in FInterpVtxData Int
 	{
 		const float3 Facing0 = GetVec3(NiagaraGPURibbonVF.FacingDataOffset, InterpVtxData.ParticleId0);
 		const float3 Facing1 = GetVec3(NiagaraGPURibbonVF.FacingDataOffset, InterpVtxData.ParticleId1);
-		Facing = normalize(TransformVector(lerp(Facing0, Facing1, InterpVtxData.Alpha)));
+		Facing = SafeNormalize(TransformVector(lerp(Facing0, Facing1, InterpVtxData.Alpha)), float3(0, 0, 0));
 	}
 	else
 	{
-		Facing = normalize(ResolvedView.WorldCameraOrigin - Intermediates.Position);
+		Facing = SafeNormalize(ResolvedView.WorldCameraOrigin - Intermediates.Position, float3(0, 0, 0));
 	}
 
 	float3 Right = normalize(cross(Facing, Intermediates.Direction));
@@ -744,11 +749,11 @@ void GetNiagaraParticleTangents(FVertexFactoryInput Input, in FInterpVtxData Int
 	
 	
 	
-	Intermediates.TangentZ = normalize((Intermediates.TangentZ * SliceVertexNormals.y + Intermediates.TangentX * SliceVertexNormals.x));
+	Intermediates.TangentZ = SafeNormalize((Intermediates.TangentZ * SliceVertexNormals.y + Intermediates.TangentX * SliceVertexNormals.x), float3(0, 0, 0));
 	
 	// Flip the normal only for multiplane shape if the normal is looking away from the camera.
 	// This lets us still render as two sided, but at least gets the normals corrected so the plane faces the camera.
-	float3 ViewNormal = normalize(ResolvedView.WorldCameraOrigin - Intermediates.Position);	
+	float3 ViewNormal = SafeNormalize(ResolvedView.WorldCameraOrigin - Intermediates.Position, float3(0, 0, 0));	
 	Intermediates.TangentZ *= (NiagaraGPURibbonVF.ShouldFlipNormalToView > 0 && dot(ViewNormal, Intermediates.TangentZ) < 0) ? -1 : 1;
 	
 	Intermediates.TangentX = cross(Intermediates.TangentZ, Intermediates.TangentY);
