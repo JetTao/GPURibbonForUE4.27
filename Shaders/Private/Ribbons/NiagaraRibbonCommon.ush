@@ -108,7 +108,7 @@ int GetTotalNumParticles()
 uint NiagaraGetFloatDataStride() { return NiagaraFloatDataStride; }
 uint NiagaraGetIntDataStride() { return NiagaraIntDataStride; }
 
-#include "/Plugin/NiagaraGPURibbonRenderer/Private/NiagaraParticleAccess.ush"
+#include "/Plugin/NiagaraGPURibbon/Private/NiagaraParticleAccess.ush"
 
 // Define some shorter name functions for legacy use in existing VFs
 float GetFloat(int RegisterIdx, uint InstanceID) { return NiagaraGetFloat(RegisterIdx, InstanceID); }	

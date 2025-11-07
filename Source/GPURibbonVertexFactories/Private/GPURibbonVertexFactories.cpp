@@ -5,11 +5,11 @@
 
 void FGPURibbonVertexFactoriesModule::StartupModule()
 {
-	FString PluginShaderDir = FPaths::Combine(FPaths::ProjectPluginsDir(), TEXT("NiagaraGPURibbonRenderer"), TEXT("Shaders"));
+	FString PluginShaderDir = FPaths::Combine(FPaths::ProjectPluginsDir(), TEXT("NiagaraGPURibbon"), TEXT("Shaders"));
 	auto ShaderSourceDirectoryMappings = AllShaderSourceDirectoryMappings();
-	if (!ShaderSourceDirectoryMappings.Find(TEXT("/Plugin/NiagaraGPURibbonRenderer")))
+	if (!ShaderSourceDirectoryMappings.Find(TEXT("/Plugin/NiagaraGPURibbon")))
 	{
-		AddShaderSourceDirectoryMapping(TEXT("/Plugin/NiagaraGPURibbonRenderer"), PluginShaderDir);
+		AddShaderSourceDirectoryMapping(TEXT("/Plugin/NiagaraGPURibbon"), PluginShaderDir);
 	}
 }
 

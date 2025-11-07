@@ -85,14 +85,14 @@ void FNiagaraRibbonCreateIndexBufferCS::ModifyCompilationEnvironment(const FGlob
 }
 
 
-IMPLEMENT_GLOBAL_SHADER(FNiagaraRibbonSortPhase1CS, "/Plugin/NiagaraGPURibbonRenderer/Private/Ribbons/NiagaraRibbonSortParticles.usf", "InitialSortList", SF_Compute);
-IMPLEMENT_GLOBAL_SHADER(FNiagaraRibbonSortPhase2CS, "/Plugin/NiagaraGPURibbonRenderer/Private/Ribbons/NiagaraRibbonSortParticles.usf", "MergeSort", SF_Compute);
+IMPLEMENT_GLOBAL_SHADER(FNiagaraRibbonSortPhase1CS, "/Plugin/NiagaraGPURibbon/Private/Ribbons/NiagaraRibbonSortParticles.usf", "InitialSortList", SF_Compute);
+IMPLEMENT_GLOBAL_SHADER(FNiagaraRibbonSortPhase2CS, "/Plugin/NiagaraGPURibbon/Private/Ribbons/NiagaraRibbonSortParticles.usf", "MergeSort", SF_Compute);
 
-IMPLEMENT_GLOBAL_SHADER(FNiagaraRibbonVertexReductionInitializationCS, "/Plugin/NiagaraGPURibbonRenderer/Private/Ribbons/NiagaraRibbonVertexReductionInitialization.usf", "VertexGenInitialize", SF_Compute);
-IMPLEMENT_GLOBAL_SHADER(FNiagaraRibbonVertexReductionPropagateCS, "/Plugin/NiagaraGPURibbonRenderer/Private/Ribbons/NiagaraRibbonVertexReductionPropagation.usf", "VertexGenPrefixSumPropagation", SF_Compute);
-IMPLEMENT_GLOBAL_SHADER(FNiagaraRibbonVertexReductionFinalizeCS, "/Plugin/NiagaraGPURibbonRenderer/Private/Ribbons/NiagaraRibbonVertexReductionFinalization.usf", "OutputRibbonStats", SF_Compute);
-IMPLEMENT_GLOBAL_SHADER(FNiagaraRibbonUVParamCalculationCS, "/Plugin/NiagaraGPURibbonRenderer/Private/Ribbons/NiagaraRibbonRibbonUVParamCalculation.usf", "GenerateRibbonUVParams", SF_Compute);
+IMPLEMENT_GLOBAL_SHADER(FNiagaraRibbonVertexReductionInitializationCS, "/Plugin/NiagaraGPURibbon/Private/Ribbons/NiagaraRibbonVertexReductionInitialization.usf", "VertexGenInitialize", SF_Compute);
+IMPLEMENT_GLOBAL_SHADER(FNiagaraRibbonVertexReductionPropagateCS, "/Plugin/NiagaraGPURibbon/Private/Ribbons/NiagaraRibbonVertexReductionPropagation.usf", "VertexGenPrefixSumPropagation", SF_Compute);
+IMPLEMENT_GLOBAL_SHADER(FNiagaraRibbonVertexReductionFinalizeCS, "/Plugin/NiagaraGPURibbon/Private/Ribbons/NiagaraRibbonVertexReductionFinalization.usf", "OutputRibbonStats", SF_Compute);
+IMPLEMENT_GLOBAL_SHADER(FNiagaraRibbonUVParamCalculationCS, "/Plugin/NiagaraGPURibbon/Private/Ribbons/NiagaraRibbonRibbonUVParamCalculation.usf", "GenerateRibbonUVParams", SF_Compute);
 
-IMPLEMENT_GLOBAL_SHADER(FNiagaraRibbonCreateIndexBufferParamsCS, "/Plugin/NiagaraGPURibbonRenderer/Private/Ribbons/NiagaraRibbonInitializeIndices.usf", "InitializeIndices", SF_Compute);
-IMPLEMENT_GLOBAL_SHADER(FNiagaraRibbonCreateIndexBufferCS, "/Plugin/NiagaraGPURibbonRenderer/Private/Ribbons/NiagaraRibbonGenerateIndices.usf", "GenerateIndices", SF_Compute);
+IMPLEMENT_GLOBAL_SHADER(FNiagaraRibbonCreateIndexBufferParamsCS, "/Plugin/NiagaraGPURibbon/Private/Ribbons/NiagaraRibbonInitializeIndices.usf", "InitializeIndices", SF_Compute);
+IMPLEMENT_GLOBAL_SHADER(FNiagaraRibbonCreateIndexBufferCS, "/Plugin/NiagaraGPURibbon/Private/Ribbons/NiagaraRibbonGenerateIndices.usf", "GenerateIndices", SF_Compute);
 

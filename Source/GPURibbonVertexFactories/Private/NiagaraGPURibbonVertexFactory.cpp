@@ -181,4 +181,4 @@ IMPLEMENT_VERTEX_FACTORY_PARAMETER_TYPE(FNiagaraGPURibbonVertexFactory, SF_Compu
 IMPLEMENT_VERTEX_FACTORY_PARAMETER_TYPE(FNiagaraGPURibbonVertexFactory, SF_RayHitGroup, FNiagaraGPURibbonVertexFactoryShaderParametersVS);
 #endif
 IMPLEMENT_VERTEX_FACTORY_PARAMETER_TYPE(FNiagaraGPURibbonVertexFactory, SF_Pixel, FNiagaraGPURibbonVertexFactoryShaderParametersPS);
-IMPLEMENT_VERTEX_FACTORY_TYPE(FNiagaraGPURibbonVertexFactory, "/Plugin/NiagaraGPURibbonRenderer/Private/NiagaraGPURibbonVertexFactory.ush", true, false, true, false, false);
+IMPLEMENT_VERTEX_FACTORY_TYPE(FNiagaraGPURibbonVertexFactory, "/Plugin/NiagaraGPURibbon/Private/NiagaraGPURibbonVertexFactory.ush", true, false, true, false, false);
