@@ -1089,7 +1089,7 @@ FNiagaraIndexGenerationInput FNiagaraRendererGPURibbons::CalculateIndexBufferCon
 #if WITH_NIAGARA_COMPONENT_PREVIEW_DATA
 	IndexGenInput.ViewDistance  = SceneProxy->PreviewLODDistance >= 0.0f ? SceneProxy->PreviewLODDistance : SceneProxy->GetBounds().ComputeSquaredDistanceFromBoxToPoint(ViewOriginForDistanceCulling);
 #else
-	cIndexGenInput.ViewDistance = SceneProxy->GetBounds().ComputeSquaredDistanceFromBoxToPoint(ViewOriginForDistanceCulling);
+	IndexGenInput.ViewDistance = SceneProxy->GetBounds().ComputeSquaredDistanceFromBoxToPoint(ViewOriginForDistanceCulling);
 #endif
 	
 	// If we are a gpu sim, we rely on num instances allocated since between now and render we could have a different number of particles living
