@@ -72,7 +72,5 @@ public class GPURibbonRenderer : ModuleRules
 					"UnrealEd"
 				});
 		}
-		
-		OptimizeCode = CodeOptimization.Never;
 	}
 }
